@@ -2,17 +2,17 @@
 
 namespace App\Controller;
 
-class User extends \Core\Controller
+class Home extends \Core\Controller
 {
     public function __construct()
     {
-        echo "USER CONTROLLER";
+        echo "HOME CONTROLLER";
     }
 
 
-    #[\Core\Route('/users', method: 'GET')]
-    public function listUsers() {
-        echo 'This is the list users route';
+    #[\Core\Route('/', method: 'GET')]
+    public function listHome() {
+        echo 'This is the list home route';
     }
 
     // Show the product attributes based on the id.

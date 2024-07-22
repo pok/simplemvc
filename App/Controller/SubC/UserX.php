@@ -1,8 +1,8 @@
 <?php 
 
-namespace App\Controller;
+namespace App\Controller\SubC;
 
-class User extends \Core\Controller
+class UserX extends \Core\Controller
 {
     public function __construct()
     {

@@ -1,5 +1,6 @@
 <?php
 
+require_once('config.php');
 
 define('E_FATAL',  E_ERROR | E_USER_ERROR | E_PARSE | E_CORE_ERROR | 
         E_COMPILE_ERROR | E_RECOVERABLE_ERROR);
@@ -7,7 +8,6 @@ define('E_FATAL',  E_ERROR | E_USER_ERROR | E_PARSE | E_CORE_ERROR |
 define('DISPLAY_ERRORS', TRUE);
 define('ERROR_REPORTING', E_ALL | E_STRICT);
 define('LOG_ERRORS', TRUE);
-define('ENV', 'DEV');
 
 register_shutdown_function('shut');
 set_error_handler('handler');
@@ -89,8 +89,13 @@ spl_autoload_register(function ($Name) {
 ob_start();
 
 try {
-    $Router = new Core\Router();
-    $Router->GetRoute();    
+    $router = new Core\Router(APPROOT.DIRECTORY_SEPARATOR.'App'.DIRECTORY_SEPARATOR.'Controller');
+    
+    if ($match = $router->match()) {
+        $controller = new $match['class']();
+        $controller->{$match['method']}($match['params']);
+    }
+
 } catch (\Exception $e) {
     echo 'EXCEPTION';
     echo 'Caught exception: ',  $e->getMessage(), "\n";
