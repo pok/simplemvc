@@ -5,9 +5,6 @@ namespace Core;
 #[\Attribute(\Attribute::TARGET_METHOD)]
 class Route
 {
-    public const DEFAULT_REGEX = '[\w\-]+';
-    private array $parameters = [];
-
     public function __construct(
         private string $path,
         private string $name = '',

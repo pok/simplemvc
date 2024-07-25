@@ -45,13 +45,21 @@ class Router {
             foreach ($reflectionController->getMethods() as $reflectionMethod) {
                 $routeAttributes = $reflectionMethod->getAttributes(\Core\Route::class);
                 $authorizeAttributes = $reflectionMethod->getAttributes(\Core\Authorize::class);
+
+                
                 foreach ($routeAttributes as $routeAttribute) {
+                    $requireRole = false;
+                    if (count($authorizeAttributes) > 0) {
+                        $auth = $authorizeAttributes[0]->newInstance();
+                        $requireRole = $auth->getRole();
+
+                    }
                     $route = $routeAttribute->newInstance();
                     $this->routes[$reflectionMethod->class.'--'.$reflectionMethod->name] = [
                         'class'  => $reflectionMethod->class,
                         'method' => $reflectionMethod->name,
                         'route'  => $route,
-                        'requireAuthorization' => count($authorizeAttributes) > 0
+                        'requireRole' => $requireRole
                     ];
                 }
             }
@@ -71,7 +79,7 @@ class Router {
                     'class'  => $route['class'],
                     'method' => $route['method'],
                     'params' => $params,
-                    'requireAuthorization' => $route['requireAuthorization']
+                    'requireRole' => $route['requireRole']
                 ];
             }
         }

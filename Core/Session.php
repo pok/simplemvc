@@ -37,6 +37,11 @@ class Session
         return array_key_exists($key, $_SESSION);
     }
 
+    public function getRole()
+    {
+        return $_SESSION['user_role'];
+    }
+
     public function getUserId()
     {
         return $_SESSION['user_id'];

@@ -86,14 +86,14 @@ spl_autoload_register(function ($Name) {
 ob_start();
 
 try {
-    $router = new Core\Router(APPROOT.DIRECTORY_SEPARATOR.'App'.DIRECTORY_SEPARATOR.'Controller');
+    $router = new Core\Router(APPROOT.DIRECTORY_SEPARATOR.'Controller');
     
     if ($match = $router->match()) {
 
         $sessionManager = new Core\Session();
         $sessionManager->startSession();
 
-        if ($match['requireAuthorization'] == true && !$sessionManager->isLoggedIn()) {
+        if ($match['requireRole'] && $sessionManager->getRole() !== $match['requireRole']) {
             header('Location: login');
             return;
         }

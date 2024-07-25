@@ -4,7 +4,7 @@ namespace App\Controller;
 
 class User extends \Core\Controller
 {
-    #[\Core\Authorize()]
+    #[\Core\Authorize('admin')]
     #[\Core\Route('/users', method: 'GET')]
     public function listUsers() {
         echo 'This is the list users route';

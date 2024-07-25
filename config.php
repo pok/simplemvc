@@ -7,8 +7,9 @@ define('DB_PASS', '_YOUR_PASSWORD_');
 define('DB_NAME', '_YOUR_DBNAME');
 
 //App Root
-define('APPROOT', dirname(__FILE__));
-define('URLROOT', 'http://localhost/{_YOUR_URL_ROOT}');
+define('ROOT', dirname(__FILE__));
+define('APPROOT', ROOT.DIRECTORY_SEPARATOR.'App');
+define('PUBLICROOT', 'http://localhost/simplemvc/public');
 
 //site name
 define('SITEROOT', '/simplemvc');
