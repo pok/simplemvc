@@ -48,12 +48,13 @@ class Router {
 
                 
                 foreach ($routeAttributes as $routeAttribute) {
+
                     $requireRole = false;
                     if (count($authorizeAttributes) > 0) {
                         $auth = $authorizeAttributes[0]->newInstance();
                         $requireRole = $auth->getRole();
-
                     }
+
                     $route = $routeAttribute->newInstance();
                     $this->routes[$reflectionMethod->class.'--'.$reflectionMethod->name] = [
                         'class'  => $reflectionMethod->class,
@@ -70,8 +71,8 @@ class Router {
     public function match(): ?array
     {
         $baseURI = preg_quote(SITEROOT, '/');
-        $request = preg_replace("/^{$baseURI}/", '', $_SERVER['REQUEST_URI']);
-        $request = (empty($request) ? '/': $request);
+        $request = preg_replace("/^{$baseURI}/", '', parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH));
+        $request = empty($request) ? '/': $request;
 
         foreach ($this->routes as $route) {
             if ($this->matchRequest($request, $route['route'], $params)) {

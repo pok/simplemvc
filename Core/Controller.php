@@ -5,9 +5,11 @@ namespace Core;
 class Controller {
 
     protected $sessionManager;
+    protected $request;
 
-    public function __construct($sessionManager) {
+    public function __construct($sessionManager, $request) {
         $this->sessionManager = $sessionManager;
+        $this->request = $request;
     }
 
     public function renderTemplate($templateName, $data = array()) {

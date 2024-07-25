@@ -93,12 +93,15 @@ try {
         $sessionManager = new Core\Session();
         $sessionManager->startSession();
 
+
         if ($match['requireRole'] && $sessionManager->getRole() !== $match['requireRole']) {
             header('Location: login');
             return;
         }
 
-        $controller = new $match['class']($sessionManager);
+        $request = new Core\Request();
+        
+        $controller = new $match['class']($sessionManager, $request);
         $controller->{$match['method']}($match['params']);
     }
 

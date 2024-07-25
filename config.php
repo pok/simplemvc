@@ -2,9 +2,9 @@
 
 define('ENV', 'DEV');
 define('DB_HOST', 'localhost');
-define('DB_USER', '_YOUR_USERNAME_');
-define('DB_PASS', '_YOUR_PASSWORD_');
-define('DB_NAME', '_YOUR_DBNAME');
+define('DB_USER', 'root');
+define('DB_PASS', '');
+define('DB_NAME', 'blog_bd');
 
 //App Root
 define('ROOT', dirname(__FILE__));

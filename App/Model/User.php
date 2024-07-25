@@ -1,14 +1,22 @@
-<?php 
+<?php
 
 namespace App\Model;
 
-class User {
+class User
+{
+    protected $connection;
 
-    public $id;
-    public $name;
-    public $createdDt;
-    public $createdUserId;
-    public $updatedDt;
-    public $updatedUserId;
+    public function __construct($connection) {
+        $this->connection = $connection;
+    }
 
+    public function getUserByUsernameAndPassword($username, $password)
+    {
+        $query = $this->connection->prepare('SELECT * FROM users WHERE username = ? AND password = ?');
+        $query->execute(array($username, $password));
+
+        $result = $query->fetch(\PDO::FETCH_ASSOC);
+
+        return $result;
+    }
 }
