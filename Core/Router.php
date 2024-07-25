@@ -47,7 +47,7 @@ class Router {
 
                 foreach ($routeAttributes as $routeAttribute) {
                     $route = $routeAttribute->newInstance();
-                    $this->routes[$route->getName()] = [
+                    $this->routes[$reflectionMethod->class.'--'.$reflectionMethod->name] = [
                         'class'  => $reflectionMethod->class,
                         'method' => $reflectionMethod->name,
                         'route'  => $route,
@@ -60,27 +60,22 @@ class Router {
 
     public function match(): ?array
     {
-        echo SITEROOT;
+        $baseURI = preg_quote(SITEROOT, '/');
+        $request = preg_replace("/^{$baseURI}/", '', $_SERVER['REQUEST_URI']);
+        $request = (empty($request) ? '/': $request);
 
-        // $request = substring(strlen(SITEROOT), $_SERVER['REQUEST_URI']);
+        foreach ($this->routes as $route) {
+            if ($this->matchRequest($request, $route['route'], $params)) {
 
-        // echo $request;
+                return [
+                    'class'  => $route['class'],
+                    'method' => $route['method'],
+                    'params' => $params,
+                ];
+            }
+        }
 
-        // if (!empty($this->baseURI)) {
-        //     $baseURI = preg_quote($this->baseURI, '/');
-        //     $request = preg_replace("/^{$baseURI}/", '', $request);
-        // }
-        // $request = (empty($request) ? '/': $request);
-
-        // foreach ($this->routes as $route) {
-        //     if ($this->matchRequest($request, $route['route'], $params)) {
-        //         return [
-        //             'class'  => $route['class'],
-        //             'method' => $route['method'],
-        //             'params' => $params,
-        //         ];
-        //     }
-        // }
+        echo 'ROUTE NOT FOUND :(';
 
         return null;
     }
@@ -90,15 +85,21 @@ class Router {
         $requestArray = explode('/', $request);
         $pathArray = explode('/', $route->getPath());
 
-        // Remove empty values in arrays
         $requestArray = array_values(array_filter($requestArray, 'strlen'));
         $pathArray = array_values(array_filter($pathArray, 'strlen'));
 
-        if (!(count($requestArray) === count($pathArray)) || ($_SERVER['REQUEST_METHOD'] !== $route->getMethod())) {
+        // Not the right method
+        if ($_SERVER['REQUEST_METHOD'] !== $route->getMethod()) {
+            return false;
+        }
+
+        if (!(count($requestArray) === count($pathArray))) {
             return false;
         }
 
         foreach ($pathArray as $index => $urlPart) {
+
+
             if (isset($requestArray[$index])) {
                 if (str_starts_with($urlPart, '{')) {
                     $routeParameter = explode(' ', preg_replace('/{([\w\-%]+)(<(.+)>)?}/', '$1 $3', $urlPart));

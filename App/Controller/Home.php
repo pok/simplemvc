@@ -6,7 +6,7 @@ class Home extends \Core\Controller
 {
     public function __construct()
     {
-        echo "HOME CONTROLLER";
+        
     }
 
 
