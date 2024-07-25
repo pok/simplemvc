@@ -4,12 +4,6 @@ namespace App\Controller;
 
 class Home extends \Core\Controller
 {
-    public function __construct()
-    {
-        
-    }
-
-
     #[\Core\Route('/', method: 'GET')]
     public function listHome() {
         echo 'This is the list home route';

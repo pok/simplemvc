@@ -44,13 +44,14 @@ class Router {
 
             foreach ($reflectionController->getMethods() as $reflectionMethod) {
                 $routeAttributes = $reflectionMethod->getAttributes(\Core\Route::class);
-
+                $authorizeAttributes = $reflectionMethod->getAttributes(\Core\Authorize::class);
                 foreach ($routeAttributes as $routeAttribute) {
                     $route = $routeAttribute->newInstance();
                     $this->routes[$reflectionMethod->class.'--'.$reflectionMethod->name] = [
                         'class'  => $reflectionMethod->class,
                         'method' => $reflectionMethod->name,
                         'route'  => $route,
+                        'requireAuthorization' => count($authorizeAttributes) > 0
                     ];
                 }
             }
@@ -66,11 +67,11 @@ class Router {
 
         foreach ($this->routes as $route) {
             if ($this->matchRequest($request, $route['route'], $params)) {
-
                 return [
                     'class'  => $route['class'],
                     'method' => $route['method'],
                     'params' => $params,
+                    'requireAuthorization' => $route['requireAuthorization']
                 ];
             }
         }
@@ -98,7 +99,6 @@ class Router {
         }
 
         foreach ($pathArray as $index => $urlPart) {
-
 
             if (isset($requestArray[$index])) {
                 if (str_starts_with($urlPart, '{')) {

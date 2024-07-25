@@ -32,19 +32,4 @@ class Route
     {
         return $this->method;
     }
-
-    public function hasParams(): bool
-    {
-        return preg_match('/{([\w\-%]+)(<(.+)>)?}/', $this->path);
-    }
-
-    public function fetchParams(): array
-    {
-        if (empty($this->parameters)) {
-            preg_match_all('/{([\w\-%]+)(?:<(.+?)>)?}/', $this->getPath(), $params);
-            $this->parameters = array_combine($params[1], $params[2]);
-        }
-
-        return $this->parameters;
-    }
 }

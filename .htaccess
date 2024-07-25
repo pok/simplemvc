@@ -1,4 +1,9 @@
-RewriteEngine on
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ /simplemvc/index.php?request=$1 [NC,L,QSA]
+RewriteEngine On
+RewriteRule ^public/ - [L]
+
+# Static resources if they exist
+RewriteCond %{DOCUMENT_ROOT}/public/$1 -f
+RewriteRule (.+) public/$1 [L]
+
+# Route all other requests
+RewriteRule (.*) public/index.php?route=$1 [L,QSA]

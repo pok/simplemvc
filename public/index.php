@@ -1,6 +1,6 @@
 <?php
 
-require_once('config.php');
+require_once('../config.php');
 
 define('E_FATAL',  E_ERROR | E_USER_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR | E_RECOVERABLE_ERROR);
 
@@ -79,10 +79,8 @@ function handler( $errno, $errstr, $errfile, $errline ) {
 
 date_default_timezone_set('Asia/Ho_Chi_Minh');
 
-session_start();
-
 spl_autoload_register(function ($Name) {
-    require_once(__DIR__ . DIRECTORY_SEPARATOR . str_replace('\\', DIRECTORY_SEPARATOR, $Name) . '.php');
+    require_once(dirname(__DIR__) . DIRECTORY_SEPARATOR . str_replace('\\', DIRECTORY_SEPARATOR, $Name) . '.php');
 });
 
 ob_start();
@@ -91,7 +89,16 @@ try {
     $router = new Core\Router(APPROOT.DIRECTORY_SEPARATOR.'App'.DIRECTORY_SEPARATOR.'Controller');
     
     if ($match = $router->match()) {
-        $controller = new $match['class']();
+
+        $sessionManager = new Core\Session();
+        $sessionManager->startSession();
+
+        if ($match['requireAuthorization'] == true && !$sessionManager->isLoggedIn()) {
+            header('Location: login');
+            return;
+        }
+
+        $controller = new $match['class']($sessionManager);
         $controller->{$match['method']}($match['params']);
     }
 

@@ -4,12 +4,7 @@ namespace App\Controller;
 
 class User extends \Core\Controller
 {
-    public function __construct()
-    {
-        echo "USER CONTROLLER";
-    }
-
-
+    #[\Core\Authorize()]
     #[\Core\Route('/users', method: 'GET')]
     public function listUsers() {
         echo 'This is the list users route';
